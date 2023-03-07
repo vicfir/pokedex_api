@@ -6,6 +6,7 @@ export const Main = () => {
   
   return (
     <main>
+      <div className='orangeBg'></div>
       <Outlet/>
     </main>
   )

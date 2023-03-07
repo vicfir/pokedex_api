@@ -8,6 +8,39 @@ export const Liste = (props) => {
     const [pokedexByRegion, setPokedexByRegion]=useState([]);
     const [indexRegion, setIndexRegion]=useState(0);
 
+    const [pokemonImg, setPokemonImg]=useState('');
+
+    
+    //TEST
+    // const [regions, setRegions]=useState([
+    //   {name : 'johto', values : []},
+    //   {name : 'kanto', values : []},
+    //   {name : 'hoenn', values : []},
+    //   {name : 'sinnoh', values : []},
+    //   {name : 'unova', values : []},
+    //   {name : 'kalos', values : []},
+    //   {name : 'alola', values : []},
+    //   {name : 'galar', values : []},
+    //   {name : 'hisui', values : []},
+    //   {name : 'paldea', values : []},
+    // ]);
+
+    // useEffect(()=>{
+    //   const getRegionsLocations = async () => {
+    //     try {
+    //       const requests = regions.map((region, index) => axios.get(`https://pokeapi.co/api/v2/region/${index+1}`));
+    //       const responses = await Promise.all(requests);
+    //       const data = responses.map(response => response.data.locations);
+    //       const newRegions = regions.map((region, index) => ({ ...region, values: data[index] }));
+    //       setRegions(newRegions);
+    //       console.log(newRegions);
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //   }
+    //   getRegionsLocations();
+    // }, []);
+
     // useEffect(() => {
     //   const getAllPokemons = async () => {
     //     try {
@@ -54,7 +87,7 @@ export const Liste = (props) => {
           // const pokemonsDataByRegion = await Promise.all(pokemonsUrls.map(arr => Promise.all (arr.map(name => axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`)))));
 
           setPokedexByRegion(pokedexesByRegionData);
-          // console.log(pokemonsByRegion);
+          console.log(pokemonsByRegion);
         } catch (error) {
           console.log(error);
         }
@@ -79,36 +112,44 @@ export const Liste = (props) => {
         setIndexRegion(9)
       }
     }
+
+    const displayPokemon = (pokemon) => {
+      const pokemonData = axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
+      pokemonData.then(response => {setPokemonImg(response.data.sprites.other['official-artwork'].front_default)})
+
+      // setPokemonName(pokemon);
+    }
        
   return (
     <>
-      <div className='flex justify-between'>
+      <div className='flex justify-between w-full'>
           <h1 className='text-2xl'>Pokedex</h1>
-          <nav className='flex flex-col items-center w-5/12'>
-              <div className='flex text-2xl'>
-                  <button onClick={previousRegion}>&lt;-</button>
+          <img src={pokemonImg} alt="" className='imgPokemonList' />
+          <nav className='flex flex-col items-center'>
+              <div className='lex text-2xl text-white flex my-4'>
+                <div className='regionSquare'></div>
+                <button onClick={previousRegion} className='pt-2'>&lt;-</button>
 
-                  {pokedexByRegion[indexRegion] && <h1 className='mx-3 '>{pokedexByRegion[indexRegion].name}</h1>}
+                {pokedexByRegion[indexRegion] && <h1 className='mx-3 pt-2'>{pokedexByRegion[indexRegion].name}</h1>}
 
-                  <button onClick={nextRegion}>-&gt;</button>
+                <button onClick={nextRegion} className='pt-2'>-&gt;</button>
               </div>
               <p className='text-xs'>use left and right arrow to switch region</p>
 
-              {pokedexByRegion[indexRegion] && pokedexByRegion[indexRegion].pokemon_entries.map((pokemon, index) => { 
+              <div className='list'>
+                {pokedexByRegion[indexRegion] && pokedexByRegion[indexRegion].pokemon_entries.map((pokemon, index) => { 
 
                 return(
-                  <div key={index} className='flex w-full justify-between items-center'>
+                  <div key={index} className='flex w-full justify-end items-center'>
                     
-                    <div className='flex items-center'>
-                      {/* <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index+1}.png`} alt="" /> */}
-                      {/* <p>No. {pokemon.id.toString().length < 2 ? "00"+pokemon.id : pokemon.id.toString().length < 3 ? "0"+pokemon.id : pokemon.id}</p> */}
-                    </div>
+                    
                     {/* <p onClick={()=>{props.selectPok(pokemon.pokemon_species.name)}}>{pokemon.pokemon_species.name}</p> */}
-                    <Link onClick={()=>{props.selectPok(pokemon.pokemon_species.name)}} to={"pokemon"}>{pokemon.pokemon_species.name}</Link>
+                    <Link onClick={()=>{props.selectPok(pokemon.pokemon_species.name)}} onMouseOver={()=>{displayPokemon(pokemon.pokemon_species.name)}} to={"pokemon"} className='pokemonInList py-3'>{pokemon.pokemon_species.name}</Link>
 
                   </div>
                 )
-              })}
+                })}
+              </div>
               
 
               {/* {allPokemons && allPokemons.map((pokemon, index) => {      
